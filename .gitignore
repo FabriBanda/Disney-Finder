@@ -1,0 +1,4 @@
+DisneyFinder/Secrets.xcconfig
+DisneyFinder.xcodeproj/project.xcworkspace/xcuserdata/
+*.xcuserdata/
+.DS_Store

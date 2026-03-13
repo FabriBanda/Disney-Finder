@@ -9,9 +9,15 @@ import SwiftUI
 
 @main
 struct DisneyFinderApp: App {
+    
+    let dependencies:DependencyInjector = DependencyInjector()
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            HomeScreen(
+                getAllCharactersUseCase: dependencies.getAllCharactersUseCase,
+                searchCharactersUseCase: dependencies.searchCharactersUseCase
+            )
         }
     }
 }
