@@ -23,6 +23,4 @@ extension CharacterEntity{
         CharacterEntity(_id: 5, name: "Goofy", imageUrl: nil, films: ["A Goofy Movie", "An Extremely Goofy Movie"])
 
     ]
-
-    
 }
