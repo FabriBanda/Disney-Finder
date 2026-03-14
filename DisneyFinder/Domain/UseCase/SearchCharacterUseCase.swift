@@ -10,7 +10,7 @@ import Foundation
 struct SearchCharacterUseCase{
     
     enum SearchCharacterError: Error {
-        case notFound
+        case emptyName
     }
     
     private let charactersRepository:CharactersRepository
@@ -28,11 +28,12 @@ struct SearchCharacterUseCase{
     }
     
     func searchCharacter(params:Params) async throws -> Response {
-        let characters = try await self.charactersRepository.filterCharacters(name: params.name)
         
-        if characters.isEmpty{
-            throw SearchCharacterError.notFound
+        guard !params.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            throw SearchCharacterError.emptyName
         }
+        
+        let characters = try await self.charactersRepository.filterCharacters(name: params.name)
         
         return Response(results: characters)
         

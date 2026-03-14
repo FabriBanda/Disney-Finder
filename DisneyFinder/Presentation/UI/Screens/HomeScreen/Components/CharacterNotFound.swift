@@ -14,7 +14,7 @@ struct CharacterNotFound: View {
             VStack(alignment: .center, spacing: 15){
                 Image(systemName: "questionmark.circle")
                     .font(.system(size: 55))
-                Text("No se encontraron personajes con ese nombre ")
+                Text("No characters were found with that name")
                     .font(.body)
             }
             Spacer()
@@ -22,4 +22,3 @@ struct CharacterNotFound: View {
         .foregroundStyle(.white)
     }
 }
-
