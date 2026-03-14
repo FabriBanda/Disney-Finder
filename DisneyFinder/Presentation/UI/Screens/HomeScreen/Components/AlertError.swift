@@ -79,7 +79,7 @@ struct AlertError: View {
             Spacer()
         }
         .padding()
-        .background(Color.red.opacity(0.1), in: RoundedRectangle(cornerRadius: 25))
+        .background(Color.white.opacity(0.8), in: RoundedRectangle(cornerRadius: 25))
         .overlay {
             RoundedRectangle(cornerRadius: 25)
                 .stroke(Color.red, lineWidth: 1)
@@ -104,6 +104,3 @@ struct AlertError: View {
     }
 }
 
-#Preview {
-    TestView()
-}

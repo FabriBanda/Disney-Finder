@@ -24,7 +24,7 @@ struct SearchButton: View {
             }.padding()
              .glassEffect()
              .clipShape(Circle())
-             .disabled(self.disable)
+           //  .disabled(self.disable)
         }
     }
 }

@@ -12,16 +12,28 @@ import Combine
 @Observable
 class HomeViewModel{
     
-    enum HomeState{
+    enum HomeState {
         case idle
         case loading
         case success([CharacterEntity])
         case notFound
-        case failure(String)
+    }
+    
+    struct ErrorBanner:Identifiable,Equatable {
+        let id = UUID()
+        let message:String
     }
     
     var homeState:HomeState = .idle
+    var visibleError: ErrorBanner?
     let skeletonCount:Int = 5
+    
+    var isLoading:Bool{
+        if case .loading = homeState {
+            return true
+        }
+        return false
+    }
     
     var displayed:[CharacterEntity]{
         switch homeState {
@@ -33,23 +45,7 @@ class HomeViewModel{
             return characters
         case .notFound:
             return []
-        case .failure:
-            return []
         }
-    }
-    
-    var isLoading: Bool {
-        if case .loading = self.homeState {
-            return true
-        }
-        return false
-    }
-    
-    var errorMessage: String? {
-        if case .failure(let message) = self.homeState {
-            return message
-        }
-        return nil
     }
     
     private let getAllCharactersUseCase: GetAllCharactersUseCase
@@ -71,9 +67,9 @@ class HomeViewModel{
             self.homeState = .success(response.results)
             
         } catch let error as RepositoryError {
-            self.homeState = .failure(error.errorDescription!)
+            self.visibleError = .init(message: error.errorDescription ?? "An error occurred")
         } catch {
-            self.homeState = .failure("There was an error while trying to fetch the characters")
+            self.visibleError = .init(message: "There was an error while trying to fetch the characters")
         }
         
     }
@@ -87,6 +83,7 @@ class HomeViewModel{
         do {
             
             let response = try await self.searchCharactersUseCase.searchCharacter(params: .init(name: trimmedName))
+            
             if response.results.isEmpty {
                 self.homeState = .notFound
                 return
@@ -98,13 +95,18 @@ class HomeViewModel{
         } catch let error as SearchCharacterUseCase.SearchCharacterError {
             switch error{
             case .emptyName:
-                self.homeState = .failure("You must enter a character name")
+                self.visibleError = .init(message: "You must enter a character name")
+                self.homeState = .idle
             }
         } catch let error as RepositoryError{
-            self.homeState = .failure(error.errorDescription!)
+            self.visibleError = .init(message: error.errorDescription ?? "An unexpected error occurred")
         } catch {
-            self.homeState = .failure("An unexpected error occurred")
+            self.visibleError = .init(message: "An unexpected error ocurred")
         }
+    }
+    
+    func clearVisibleError(){
+        self.visibleError = nil
     }
     
 }

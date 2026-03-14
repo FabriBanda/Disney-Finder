@@ -11,6 +11,7 @@ struct HomeScreen: View {
     
     @State private var homeViewModel:HomeViewModel
     @State private var nameCharacter:String = ""
+    @State private var autoDismissTask: Task<Void, Never>?
     
     init(getAllCharactersUseCase: GetAllCharactersUseCase,searchCharactersUseCase:SearchCharacterUseCase) {
         _homeViewModel = State(wrappedValue: HomeViewModel(getAllCharactersUseCase: getAllCharactersUseCase, searchCharactersUseCase: searchCharactersUseCase))
@@ -70,9 +71,6 @@ struct HomeScreen: View {
                     
                 case .notFound:
                     CharacterNotFound()
-                case .failure(let message):
-                    Text(message)
-                        .font(.body)
                 default:
                     EmptyView()
                 }
@@ -107,8 +105,39 @@ struct HomeScreen: View {
             .foregroundStyle(Color.white)
             .background(Color.clear)
             .padding(.horizontal)
+            .overlay(alignment: .top){
+                if let visibleError = homeViewModel.visibleError{
+                    AlertError(messageError: visibleError.message) {
+                        dismissError()
+                    }
+                    .padding()
+                    .transition(.move(edge: .top).combined(with: .opacity))
+                    .onAppear{
+                        self.presentError()
+                    }
+                }
+            }
+            .animation(.bouncy, value: self.homeViewModel.visibleError)
+            .onDisappear {
+                self.autoDismissTask?.cancel()
+            }
         }
         
+    }
+    
+    private func presentError() {
+        self.autoDismissTask?.cancel()
+        self.autoDismissTask = Task {
+            try? await Task.sleep(for: .seconds(3))
+            guard !Task.isCancelled else { return }
+            self.dismissError()
+        }
+    }
+
+    private func dismissError() {
+        self.autoDismissTask?.cancel()
+        self.autoDismissTask = nil
+        self.homeViewModel.clearVisibleError()
     }
 }
 
