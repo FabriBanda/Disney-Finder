@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct TestView: View {
-    @State private var showError: Bool = false
+    @State private var showError:Bool = false
     @State private var autoDismissTask: Task<Void, Never>?
 
     var body: some View {
@@ -79,12 +79,12 @@ struct AlertError: View {
             Spacer()
         }
         .padding()
-        .background(Color.white.opacity(0.8), in: RoundedRectangle(cornerRadius: 25))
+        .background(Color.white, in: RoundedRectangle(cornerRadius: 25))
         .overlay {
             RoundedRectangle(cornerRadius: 25)
                 .stroke(Color.red, lineWidth: 1)
         }
-        .padding()
+        .padding(.horizontal)
         .offset(y: min(self.dragOffset.height, 0))
         .gesture(
             DragGesture()

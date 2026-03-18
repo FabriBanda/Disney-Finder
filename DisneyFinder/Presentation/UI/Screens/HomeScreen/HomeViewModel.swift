@@ -25,6 +25,7 @@ class HomeViewModel{
     }
     
     var homeState:HomeState = .idle
+    var displayedCharacters:[CharacterEntity] = []
     var visibleError: ErrorBanner?
     let skeletonCount:Int = 5
     
@@ -65,11 +66,14 @@ class HomeViewModel{
             
             let response = try await self.getAllCharactersUseCase.getAllCharacters()
             self.homeState = .success(response.results)
+            self.displayedCharacters = response.results
             
         } catch let error as RepositoryError {
             self.visibleError = .init(message: error.errorDescription ?? "An error occurred")
+            self.homeState = .success(displayedCharacters)
         } catch {
             self.visibleError = .init(message: "There was an error while trying to fetch the characters")
+            self.homeState = .idle
         }
         
     }
@@ -90,18 +94,28 @@ class HomeViewModel{
             }
             
             self.homeState = .success(response.results)
-            
+            self.displayedCharacters = response.results
             
         } catch let error as SearchCharacterUseCase.SearchCharacterError {
+            
             switch error{
+                
             case .emptyName:
                 self.visibleError = .init(message: "You must enter a character name")
-                self.homeState = .idle
+                if !self.displayedCharacters.isEmpty{
+                    self.homeState = .success(displayedCharacters)
+                }else{
+                    self.homeState = .idle
+                }
+                
             }
+            
         } catch let error as RepositoryError{
             self.visibleError = .init(message: error.errorDescription ?? "An unexpected error occurred")
+            self.homeState = .success(displayedCharacters)
         } catch {
             self.visibleError = .init(message: "An unexpected error ocurred")
+            self.homeState = .idle
         }
     }
     

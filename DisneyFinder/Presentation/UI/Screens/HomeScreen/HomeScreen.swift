@@ -43,7 +43,7 @@ struct HomeScreen: View {
                     
                     Spacer()
                     
-                    SearchButton(disable: self.isEmpty || self.homeViewModel.isLoading) {
+                    SearchButton(disable:self.homeViewModel.isLoading) {
                         Task{
                             await self.homeViewModel.searchCharacters(self.nameCharacter)
                         }
@@ -105,23 +105,22 @@ struct HomeScreen: View {
             .foregroundStyle(Color.white)
             .background(Color.clear)
             .padding(.horizontal)
-            .overlay(alignment: .top){
-                if let visibleError = homeViewModel.visibleError{
-                    AlertError(messageError: visibleError.message) {
-                        dismissError()
-                    }
-                    .padding()
-                    .transition(.move(edge: .top).combined(with: .opacity))
-                    .onAppear{
-                        self.presentError()
-                    }
-                }
-            }
-            .animation(.bouncy, value: self.homeViewModel.visibleError)
             .onDisappear {
                 self.autoDismissTask?.cancel()
             }
+        }.overlay(alignment: .top){
+            if let visibleError = homeViewModel.visibleError{
+                AlertError(messageError: visibleError.message) {
+                    dismissError()
+                }
+                .padding()
+                .transition(.move(edge: .top).combined(with: .opacity))
+                .onAppear{
+                    self.presentError()
+                }
+            }
         }
+        .animation(.bouncy, value: self.homeViewModel.visibleError)
         
     }
     

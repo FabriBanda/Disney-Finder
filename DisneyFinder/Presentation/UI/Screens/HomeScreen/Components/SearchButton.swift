@@ -12,7 +12,6 @@ struct SearchButton: View {
     var disable:Bool
     let action:() -> Void
   
-    
     var body: some View {
         VStack{
             Button {
@@ -24,7 +23,7 @@ struct SearchButton: View {
             }.padding()
              .glassEffect()
              .clipShape(Circle())
-           //  .disabled(self.disable)
+          //   .disabled(self.disable)
         }
     }
 }
