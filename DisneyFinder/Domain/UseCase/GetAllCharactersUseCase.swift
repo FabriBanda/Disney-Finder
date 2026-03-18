@@ -12,6 +12,10 @@ struct GetAllCharactersUseCase{
     
     private let charactersRepository:CharactersRepository
     
+    enum GetAllCharacterError: Error{
+        case noDataAvailable
+    }
+    
     init(charactersRepository: CharactersRepository) {
         self.charactersRepository = charactersRepository
     }
@@ -20,13 +24,14 @@ struct GetAllCharactersUseCase{
         let results: [CharacterEntity]
     }
     
-    func getAllCharacters()async throws -> Response{
+    func getAllCharacters() async throws -> Response{
         
         let characters = try await charactersRepository.getAllCharacters()
-        
+    
         if characters.isEmpty{
-            throw NSError()
+            throw GetAllCharacterError.noDataAvailable
         }
+        
         return Response(results: characters)
     }
     

@@ -18,7 +18,11 @@ struct CharactersDataSourceRepositoy:CharactersRepository{
     func getAllCharacters() async throws -> [CharacterEntity] {
         
         let endpoint:Endpoint = CharacterEndpoint(type: .allCharacters)
-        let data:Data = try await dataSource.execute(endpoint: endpoint)
+        let data:Data? = try await dataSource.execute(endpoint: endpoint)
+        
+        guard let data else {
+            throw RepositoryError.noData
+        }
         
         let dtos:[CharacterDTO] = try CharacterDTO.toList(from: data)
         let entities:[CharacterEntity] = dtos.map{$0.toEntity}
@@ -30,7 +34,11 @@ struct CharactersDataSourceRepositoy:CharactersRepository{
     func filterCharacters(name: String) async throws -> [CharacterEntity] {
         
         let endpoint:Endpoint = CharacterEndpoint(type: .searchByName(name))
-        let data: Data = try await dataSource.execute(endpoint: endpoint)
+        let data: Data? = try await dataSource.execute(endpoint: endpoint)
+        
+        guard let data else {
+            throw RepositoryError.noData
+        }
         
         let dtos: [CharacterDTO] = try CharacterDTO.toList(from: data)
         let entities: [CharacterEntity] = dtos.map { $0.toEntity }

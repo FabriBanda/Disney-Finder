@@ -8,5 +8,5 @@
 import Foundation
 
 protocol DataSource:Sendable{
-    func execute <E: Endpoint>(endpoint:E) async throws -> Data
+    func execute <E: Endpoint>(endpoint:E) async throws -> Data?
 }
