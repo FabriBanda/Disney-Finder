@@ -2,7 +2,9 @@
 
 Disney Finder is an iOS app built with SwiftUI that lets you search Disney characters using the Disney API.
 
-![Disney Finder](https://github.com/user-attachments/assets/46349e9b-427f-4cac-a694-41264817792c)
+<p align="center">
+  <img width="300" alt="Disney Finder" src="https://github.com/user-attachments/assets/46349e9b-427f-4cac-a694-41264817792c" />
+</p>
 
 ## Requirements
 
